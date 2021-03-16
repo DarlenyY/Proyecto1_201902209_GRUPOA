@@ -13,6 +13,8 @@ estado = 0
 temp = None
 flagAutomataObjeto = False
 pos = 0
+posi = 0
+Menu = False
 
 def may(cad):
         return (ord(cad) >= 65 and ord(cad) <= 90)
@@ -128,26 +130,19 @@ def cadena(cad):
                 columna = columna + 1
                 if puntoY(cad[pos]):
                     print("**nombreProd: "+valor)
-                    pos = pos + 1
-                    columna = columna + 1
                     encontrado = True
                     break
                 elif dosP(cad[pos]):
                     print("Sección: "+valor)
-                    pos = pos + 1
-                    columna = columna + 1
                     encontrado = True
                     break
                 elif corcheteC(cad[pos]):
                     print("****descripcion: "+valor)
-                    pos = pos + 1
-                    columna = columna + 1
                     encontrado = True
                     break
                 else:
                     pos = pos + 1
                     columna = columna + 1
-
         else:
             valor = valor + str(cad[pos])
             columna = columna + 1
@@ -167,6 +162,7 @@ def precio(cad):
                 valor = valor + "00"
                 print("***Precio: "+valor)
                 encontrado = True
+                pos = pos + 1
                 valor = ""
                 break
             else:
@@ -193,12 +189,14 @@ def precio(cad):
             valor = ""
             break
         if encontrado:
+            encontrado = False
             break
 
 def leerMenu(cad):
-    global pos, valor,columna
+    global pos, valor,columna, Menu
     Rep = 0
     while pos!=(len(cad)):
+        print(cad[pos],end=" ")
         if corcheteA(cad[pos]):
             pos = pos + 1
             columna = columna + 1
@@ -215,11 +213,21 @@ def leerMenu(cad):
             cadena(cad)
         elif numero(cad[pos]):
             precio(cad)
+        elif Espacio(cad[pos]):
+            pos = pos + 1
+            columna = columna + 1
         else:
             pos = pos + 1
             columna = columna + 1
+    Menu = True
 
-def CargarMenu():
+def leerOrden(cad):
+    global posi, valor,columna
+    while posi!=(len(cad)):
+        print(cad[posi],end=" ")
+        posi = posi + 1
+
+def CargarArchivo():
     global pos 
     pos = 0
     lineas = ""
@@ -230,14 +238,27 @@ def CargarMenu():
         for linea in fic:
     #se guarda todo lo que contenga el acrchivo en la vaiable lineas
             lineas = lineas + linea 
+    except:
+        print("Ocurrio un error, cage el archivo de nuevo")
     finally:
         fic.close()
     #Se hace una lista con todos los caracteres delarchivo
     caracteres = list(lineas)
+    return caracteres
+
+def CargarMenu():
+    global Menu
+    Menu = False
+    caracteres = CargarArchivo()
     leerMenu(caracteres)
 
 def CargarOrden():
-    pass
+    global Menu
+    if Menu:
+        caracteres = CargarArchivo()
+        leerOrden(caracteres)
+    else:
+        print("Debe cargar un menu para generar una orden")
 
 def GenerarMenu():
     pass
