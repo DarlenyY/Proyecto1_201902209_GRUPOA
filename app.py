@@ -15,6 +15,7 @@ flagAutomataObjeto = False
 pos = 0
 posi = 0
 Menu = False
+cont = 0
 
 def may(cad):
         return (ord(cad) >= 65 and ord(cad) <= 90)
@@ -58,7 +59,7 @@ def salto(cad): #Salto de linea
 def error(simbolo,expectativa,linea,columna):
     print("Error, no se reconoce el simbolo: " + simbolo + ", se esperaba: " + expectativa + " linea: " + str(linea) + ", columna: " + str(columna) )
 
-def identificador(cad):
+"""def identificador(cad):
     global valor, pos, columna
     encontrado = False
     while pos != len(cad):
@@ -165,17 +166,19 @@ def precio(cad):
                 pos = pos + 1
                 valor = ""
                 break
-            else:
+            elif numero(cad[pos]):
+                valor = valor + str(cad[pos]) + str(cad[pos+1])
+                pos = pos + 2
+                columna = columna + 2
                 while pos != len(cad):
-                    if numero(cad[pos]) == False:
+                    if puntoY(cad[pos]):
                         print("***Precio: "+valor)
                         encontrado = True
                         valor = ""
-                        break
+                        pos = pos + 1 
+                        break 
                     else:
-                        valor = valor + str(cad[pos])
-                        pos = pos + 1
-                        columna = columna + 1             
+                        pos = pos + 1              
         elif numero(cad[pos]):
             valor = valor + str(cad[pos])
             pos = pos + 1
@@ -191,12 +194,12 @@ def precio(cad):
         if encontrado:
             encontrado = False
             break
+        
 
 def leerMenu(cad):
     global pos, valor,columna, Menu
     Rep = 0
     while pos!=(len(cad)):
-        print(cad[pos],end=" ")
         if corcheteA(cad[pos]):
             pos = pos + 1
             columna = columna + 1
@@ -220,9 +223,15 @@ def leerMenu(cad):
             pos = pos + 1
             columna = columna + 1
     Menu = True
-
+    """
+def leerMenu(cad):       
+    global posi, valor,columna,cont
+    while posi!=(len(cad)):
+        print(cad[posi],end=" ")
+        posi = posi + 1
+        
 def leerOrden(cad):
-    global posi, valor,columna
+    global posi, valor,columna,cont
     while posi!=(len(cad)):
         print(cad[posi],end=" ")
         posi = posi + 1
