@@ -47,6 +47,9 @@ def puntoY(cad):
 def Comilla(cad): #'
      return (ord(cad) == 39)
 
+def Coma(cad): #,
+     return (ord(cad) == 44)
+
 def Punto(cad): #.
      return (ord(cad) == 46)
 
@@ -59,7 +62,7 @@ def salto(cad): #Salto de linea
 def error(simbolo,expectativa,linea,columna):
     print("Error, no se reconoce el simbolo: " + simbolo + ", se esperaba: " + expectativa + " linea: " + str(linea) + ", columna: " + str(columna) )
 
-"""def identificador(cad):
+def identificador(cad):
     global valor, pos, columna
     encontrado = False
     while pos != len(cad):
@@ -194,7 +197,6 @@ def precio(cad):
         if encontrado:
             encontrado = False
             break
-        
 
 def leerMenu(cad):
     global pos, valor,columna, Menu
@@ -223,22 +225,99 @@ def leerMenu(cad):
             pos = pos + 1
             columna = columna + 1
     Menu = True
-    """
-def leerMenu(cad):       
-    global posi, valor,columna,cont
-    while posi!=(len(cad)):
-        print(cad[posi],end=" ")
-        posi = posi + 1
+
+def cantidad(cad):
+    global valor, posi, columna
+    while posi != len(cad):
+        if numero(cad[posi]):
+            valor = valor + str(cad[posi])
+            posi = posi + 1
+        elif Coma(cad[posi]):
+            print("cant: "+valor,end=" ")
+            valor = ""
+            break
+        elif posi+1 == len(cad):
+            break
+        else:
+           posi = posi + 1  
+            
+def venta(cad):
+    global valor, posi, columna
+    valor = valor + str(cad[posi])
+    posi = posi + 1
+    while posi != len(cad):
+        if min(cad[posi]) or guionB(cad[posi]) or numero(cad[posi]):
+            valor = valor + str(cad[posi])
+            posi = posi + 1
+        elif salto(cad[posi]) or posi == len(cad):
+            print("Id: "+valor)
+            valor = ""
+            break
+        else:
+            posi = posi + 1
+
+
+def datos(cad):
+    global valor, posi, columna, cont
+    encontrado = False
+    while posi != len(cad):
+        if Comilla(cad[posi]):
+            if cont == 0:
+                print("Nombre: "+valor)
+                valor = ""
+                encontrado = True
+                posi = posi + 1
+                break 
+            elif cont == 1:
+                print("Nit: "+valor)
+                valor = ""
+                encontrado = True
+                posi = posi + 1
+                break 
+            elif cont == 2:
+                print("Direccion: "+valor)
+                valor = ""
+                encontrado = True
+                posi = posi + 1
+                cont = 0
+                break 
+        else:
+            valor = valor + str(cad[posi])
+            posi = posi + 1
+        if encontrado:
+            break
         
+
 def leerOrden(cad):
     global posi, valor,columna,cont
+    uno = False
     while posi!=(len(cad)):
-        print(cad[posi],end=" ")
-        posi = posi + 1
+        if Comilla(cad[posi]):
+            posi = posi + 1   
+            datos(cad)
+            cont = cont + 1
+        elif salto(cad[posi]):
+            posi = posi + 1
+            cantidad(cad)
+            if Coma(cad[posi]):
+                posi = posi + 1 
+                while posi!=(len(cad)):
+                    if min(cad[posi]):
+                        venta(cad)
+                        uno = True
+                    else:
+                        posi = posi + 1 
+                    if uno:
+                        break
+            else:
+                posi = posi + 1 
+        else:
+            posi = posi + 1 
 
 def CargarArchivo():
-    global pos 
+    global pos, posi
     pos = 0
+    posi = 0
     lineas = ""
     #Se una ventana emergente para elegir el archivo
     raiz = filedialog.askopenfilename (title = "Abrir") 
