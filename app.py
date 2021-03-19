@@ -53,6 +53,9 @@ def Coma(cad): #,
 def Punto(cad): #.
      return (ord(cad) == 46)
 
+def Porcen(cad): #%
+     return (ord(cad) == 37)
+
 def Espacio(cad): #Espacio
      return (ord(cad) == 32)
 
@@ -170,9 +173,15 @@ def precio(cad):
                 valor = ""
                 break
             elif numero(cad[pos]):
-                valor = valor + str(cad[pos]) + str(cad[pos+1])
-                pos = pos + 2
-                columna = columna + 2
+                valor = valor + str(cad[pos])
+                pos = pos + 1
+                columna = columna + 1
+                if numero(cad[pos]):
+                    valor = valor + str(cad[pos])
+                    pos = pos + 1
+                    columna = columna + 1
+                else:
+                   valor = valor + "0" 
                 while pos != len(cad):
                     if puntoY(cad[pos]):
                         print("***Precio: "+valor)
@@ -187,13 +196,16 @@ def precio(cad):
             pos = pos + 1
             columna = columna + 1
         else:
-            valor = valor +".00"
-            pos = pos + 1
-            columna = columna + 1 
-            print("***Precio: "+valor)
-            encontrado = True
-            valor = ""
-            break
+            valor = valor + ".00"
+            while pos != len(cad):
+                    if puntoY(cad[pos]):
+                        print("***Precio: "+valor)
+                        encontrado = True
+                        valor = ""
+                        pos = pos + 1 
+                        break 
+                    else:
+                        pos = pos + 1  
         if encontrado:
             encontrado = False
             break
@@ -205,9 +217,14 @@ def leerMenu(cad):
         if corcheteA(cad[pos]):
             pos = pos + 1
             columna = columna + 1
-            identificador(cad)
+            while pos!=(len(cad)):
+                if min(cad[pos]):
+                    identificador(cad)
+                    break
+                else:
+                    pos = pos + 1  
         elif Rep == 0:
-            if (str(cad[pos])=="R" or str(cad[pos])=="r"):
+            if (str(cad[0])=="R" or str(cad[0])=="r"):
                 pos = pos + 1
                 columna = columna + 1
                 titulo(cad)
@@ -227,7 +244,7 @@ def leerMenu(cad):
     Menu = True
 
 def cantidad(cad):
-    global valor, posi, columna
+    global valor, posi
     while posi != len(cad):
         if numero(cad[posi]):
             valor = valor + str(cad[posi])
@@ -242,7 +259,7 @@ def cantidad(cad):
            posi = posi + 1  
             
 def venta(cad):
-    global valor, posi, columna
+    global valor, posi
     valor = valor + str(cad[posi])
     posi = posi + 1
     while posi != len(cad):
@@ -256,9 +273,29 @@ def venta(cad):
         else:
             posi = posi + 1
 
+def porcentaje(cad):
+    global valor, posi
+    while posi != len(cad):
+        if numero(cad[posi]):
+            valor = valor + str(cad[posi])
+            posi = posi + 1
+        elif Punto(cad[posi]):
+            valor = valor + str(cad[posi])
+            posi = posi + 1
+        elif Porcen(cad[posi]):
+            if float(valor) <= 100.00:
+                print("Porcentaje: "+valor)
+                posi = posi + 1
+                break
+            else:
+                print("el porcentaje  no es valido")
+                posi = posi + 1
+                break
+        else:
+           posi = posi + 1 
 
 def datos(cad):
-    global valor, posi, columna, cont
+    global valor, posi, cont
     encontrado = False
     while posi != len(cad):
         if Comilla(cad[posi]):
@@ -275,12 +312,23 @@ def datos(cad):
                 posi = posi + 1
                 break 
             elif cont == 2:
-                print("Direccion: "+valor)
-                valor = ""
-                encontrado = True
-                posi = posi + 1
-                cont = 0
-                break 
+                while posi != len(cad):
+                    if Coma(cad[posi]):
+                        print("Direccion: "+valor)
+                        valor = ""
+                        posi = posi + 1
+                        cont = 0
+                        while posi != len(cad):
+                            if numero(cad[posi]):
+                                porcentaje(cad)
+                                encontrado = True
+                                break
+                            else:
+                                posi = posi + 1
+                    else:
+                        posi = posi + 1 
+                    if encontrado:
+                        break 
         else:
             valor = valor + str(cad[posi])
             posi = posi + 1
@@ -310,7 +358,7 @@ def leerOrden(cad):
                     if uno:
                         break
             else:
-                posi = posi + 1 
+                posi = posi + 1
         else:
             posi = posi + 1 
 
